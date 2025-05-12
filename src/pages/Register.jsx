@@ -6,7 +6,7 @@ export default function Register() {
   const [success, setSuccess] = useState('');
 
   const handleRegister = async () => {
-    await axios.post('https://your-backend-url.onrender.com/auth/register', form);
+    await axios.post('https://flightmix-backend.onrender.com', form);
     setSuccess('Registered. Now you can log in.');
   };
 
