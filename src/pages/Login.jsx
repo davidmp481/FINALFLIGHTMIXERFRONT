@@ -7,7 +7,7 @@ export default function Login() {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post('https://your-backend-url.onrender.com/auth/token', new URLSearchParams(form));
+      const res = await axios.post('https://flightmix-backend.onrender.com', new URLSearchParams(form));
       localStorage.setItem('token', res.data.access_token);
       window.location.href = '/search';
     } catch {
