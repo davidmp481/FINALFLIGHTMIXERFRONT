@@ -7,7 +7,7 @@ export default function Search() {
 
   const search = async () => {
     const token = localStorage.getItem('token');
-    const res = await axios.post('https://flightmix-backend.onrender.com', {
+    const res = await axios.post('https://finalflightmixerback.onrender.com', {
       travel_class: 'ECONOMY',
       adults: 1,
       legs: query
