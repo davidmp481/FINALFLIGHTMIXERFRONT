@@ -4,7 +4,7 @@ import axios from 'axios';
 
 export default function Search() {
   const [results, setResults] = useState([]);
-  const [query, setQuery] = useState([{ departure_id: '', arrival_id: '', date: '' }]);
+  const [query, setQuery] = useState([{ departure_id: '', arrival_id: '', date: ''}]);
   const [error, setError] = useState('');
 
   const search = async () => {
