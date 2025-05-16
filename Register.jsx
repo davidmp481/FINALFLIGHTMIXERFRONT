@@ -1,11 +1,10 @@
+
 import { useState } from 'react';
 import axios from 'axios';
 
 export default function Search() {
   const [results, setResults] = useState([]);
-  const [query, setQuery] = useState([
-    { departure_id: '', arrival_id: '', date: '' }
-  ]);
+  const [query, setQuery] = useState([{ departure_id: '', arrival_id: '', date: '' }]);
   const [error, setError] = useState('');
 
   const search = async () => {
@@ -74,4 +73,16 @@ export default function Search() {
       <div>
         {results.map((r, i) => (
           <div key={i}>
-            <p>--- Itinerary {i + 1} ---</
+            <p>--- Itinerary {i + 1} ---</p>
+            {r.legs.map((leg, j) => (
+              <p key={j}>
+                {leg.departure} → {leg.arrival} on{' '}
+                {new Date(leg.departure_time).toLocaleString()}
+              </p>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
