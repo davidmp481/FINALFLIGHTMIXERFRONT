@@ -1,45 +1,77 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-export default function Register() {
-  const [form, setForm] = useState({ username: '', password: '' });
-  const [success, setSuccess] = useState('');
+export default function Search() {
+  const [results, setResults] = useState([]);
+  const [query, setQuery] = useState([
+    { departure_id: '', arrival_id: '', date: '' }
+  ]);
   const [error, setError] = useState('');
 
-  const handleRegister = async () => {
+  const search = async () => {
     try {
-      await axios.post("https://finalflightmixerback.onrender.com/auth/register", {
-        username: form.username,
-        password: form.password,
-        is_paid: true
-      });
-      setSuccess('Registered successfully. You can now log in.');
+      const token = localStorage.getItem('token');
+      const res = await axios.post(
+        'https://finalflightmixerback.onrender.com/api/search',
+        {
+          travel_class: 'ECONOMY',
+          adults: 1,
+          legs: query
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+      setResults(res.data.data?.itineraries || []);
       setError('');
     } catch (err) {
-      console.error("❌ Registration error:", err.response?.data || err.message);
-      setError('Registration failed. Try a different username.');
-      setSuccess('');
+      console.error('❌ Search failed:', err.response?.data || err.message);
+      setError('Search failed. Please check your input or try again later.');
     }
   };
 
   return (
     <div>
-      <h1>Register</h1>
-      <input
-        placeholder="Username"
-        value={form.username}
-        onChange={e => setForm({ ...form, username: e.target.value })}
-      /><br />
-      <input
-        type="password"
-        placeholder="Password"
-        value={form.password}
-        onChange={e => setForm({ ...form, password: e.target.value })}
-      /><br />
-      <button onClick={handleRegister}>Register</button>
-      <p style={{ color: 'green' }}>{success}</p>
-      <p style={{ color: 'red' }}>{error}</p>
-      <p><a href="/">Login</a></p>
-    </div>
-  );
-}
+      <h1>Search Flights</h1>
+      {query.map((leg, idx) => (
+        <div key={idx}>
+          <input
+            placeholder="From"
+            value={leg.departure_id}
+            onChange={e => {
+              const q = [...query];
+              q[idx].departure_id = e.target.value;
+              setQuery(q);
+            }}
+          />
+          <input
+            placeholder="To"
+            value={leg.arrival_id}
+            onChange={e => {
+              const q = [...query];
+              q[idx].arrival_id = e.target.value;
+              setQuery(q);
+            }}
+          />
+          <input
+            type="date"
+            value={leg.date}
+            onChange={e => {
+              const q = [...query];
+              q[idx].date = e.target.value;
+              setQuery(q);
+            }}
+          />
+        </div>
+      ))}
+      <button onClick={() => setQuery([...query, { departure_id: '', arrival_id: '', date: '' }])}>
+        Add Leg
+      </button>
+      <button onClick={search}>Search</button>
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      <div>
+        {results.map((r, i) => (
+          <div key={i}>
+            <p>--- Itinerary {i + 1} ---</
